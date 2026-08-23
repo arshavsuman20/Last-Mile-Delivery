@@ -1,14 +1,60 @@
 package com.lastmile.delivery.service;
 
+import com.lastmile.delivery.entity.Assignment;
+import com.lastmile.delivery.entity.DeliveryAgent;
+import com.lastmile.delivery.entity.Order;
+import com.lastmile.delivery.repository.AssignmentRepository;
 import com.lastmile.delivery.repository.DeliveryAgentRepository;
+import com.lastmile.delivery.repository.OrderRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AssignmentService {
 
+    private final AssignmentRepository assignmentRepository;
     private final DeliveryAgentRepository deliveryAgentRepository;
+    private final OrderRepository orderRepository;
 
-    public AssignmentService(DeliveryAgentRepository deliveryAgentRepository) {
+    public AssignmentService(
+            AssignmentRepository assignmentRepository,
+            DeliveryAgentRepository deliveryAgentRepository,
+            OrderRepository orderRepository) {
+
+        this.assignmentRepository = assignmentRepository;
         this.deliveryAgentRepository = deliveryAgentRepository;
+        this.orderRepository = orderRepository;
+    }
+
+    public Assignment assignOrder(Long orderId, Long agentId) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        DeliveryAgent agent = deliveryAgentRepository.findById(agentId)
+                .orElseThrow(() -> new IllegalArgumentException("Delivery agent not found"));
+
+        if (!agent.getAvailable()) {
+            throw new IllegalArgumentException("Delivery agent is not available");
+        }
+
+        order.setAssignedAgent(agent);
+        orderRepository.save(order);
+
+        agent.setAvailable(false);
+        deliveryAgentRepository.save(agent);
+
+        Assignment assignment = Assignment.builder()
+                .order(order)
+                .agent(agent)
+                .assignmentType(Assignment.AssignmentType.MANUAL)
+                .build();
+
+        return assignmentRepository.save(assignment);
+    }
+
+    public List<DeliveryAgent> getAvailableAgents() {
+        return deliveryAgentRepository.findByAvailableTrue();
     }
 }
