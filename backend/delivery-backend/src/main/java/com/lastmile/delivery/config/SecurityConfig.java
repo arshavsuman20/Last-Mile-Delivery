@@ -1,23 +1,82 @@
 package com.lastmile.delivery.config;
 
+import com.lastmile.delivery.security.JwtAuthenticationFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/rates/**", "/api/orders/**").permitAll()
-                        .anyRequest().authenticated()
-                );
+            .csrf(csrf -> csrf.disable())
+
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS
+                )
+            )
+
+            .authorizeHttpRequests(auth -> auth
+
+                .requestMatchers("/api/auth/**")
+                    .permitAll()
+
+                .requestMatchers("/api/reschedules/**")
+                    .hasAnyRole("CUSTOMER", "ADMIN")
+
+                .requestMatchers("/api/assignments/**")
+                    .hasAnyRole("ADMIN", "DELIVERY_AGENT")
+
+                .requestMatchers("/api/tracking/**")
+                    .hasAnyRole(
+                        "CUSTOMER",
+                        "DELIVERY_AGENT",
+                        "ADMIN"
+                    )
+
+                .requestMatchers("/api/orders/**")
+                    .hasAnyRole(
+                        "CUSTOMER",
+                        "ADMIN",
+                        "DELIVERY_AGENT"
+                    )
+
+                .requestMatchers("/api/rates/**")
+                    .hasAnyRole("CUSTOMER", "ADMIN")
+
+                .anyRequest()
+                    .permitAll()
+            )
+
+            .addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }

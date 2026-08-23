@@ -34,4 +34,13 @@ public class AssignmentController {
                 assignmentService.assignOrder(orderId, agentId)
         );
     }
+
+    @PostMapping("/{orderId}/auto")
+    public ResponseEntity<Assignment> autoAssignOrder(
+            @PathVariable Long orderId) {
+
+        return ResponseEntity.ok(
+                assignmentService.autoAssignOrder(orderId)
+        );
+    }
 }

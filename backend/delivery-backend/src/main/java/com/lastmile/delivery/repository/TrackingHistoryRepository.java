@@ -3,5 +3,10 @@ package com.lastmile.delivery.repository;
 import com.lastmile.delivery.entity.TrackingHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TrackingHistoryRepository extends JpaRepository<TrackingHistory, Long> {
+import java.util.List;
+
+public interface TrackingHistoryRepository
+        extends JpaRepository<TrackingHistory, Long> {
+
+    List<TrackingHistory> findByOrderIdOrderByTimestampAsc(Long orderId);
 }

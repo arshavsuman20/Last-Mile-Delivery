@@ -19,6 +19,10 @@ public class DeliveryAgent {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+    
+    @ManyToOne
+    @JoinColumn(name = "zone_id")
+    private Zone zone;
 
     @Column(nullable = false)
     private Boolean available = true;
@@ -26,4 +30,5 @@ public class DeliveryAgent {
     private Double latitude;
 
     private Double longitude;
+    
 }

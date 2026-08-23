@@ -48,10 +48,7 @@ public class RateCalculationService {
                         : RateCard.OrderType.B2C;
 
         RateCard rateCard = rateCardRepository
-                .findAll()
-                .stream()
-                .filter(r -> r.getOrderType() == rateCardType)
-                .findFirst()
+                .findByOrderType(rateCardType)
                 .orElseThrow(() -> new IllegalArgumentException("Rate card not found"));
 
         boolean sameZone =

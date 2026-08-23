@@ -103,4 +103,23 @@ public class OrderService {
     public List<Order> getAll() {
         return orderRepository.findAll();
     }
+    public List<Order> filterOrders(
+                Order.Status status,
+                Long zoneId,
+                Long agentId) {
+
+        if (status != null) {
+                return orderRepository.findByStatus(status);
+        }
+
+        if (zoneId != null) {
+                return orderRepository.findByPickupAreaZoneId(zoneId);
+        }
+
+        if (agentId != null) {
+                return orderRepository.findByAssignedAgentId(agentId);
+        }
+
+        return orderRepository.findAll();
+        }
 }

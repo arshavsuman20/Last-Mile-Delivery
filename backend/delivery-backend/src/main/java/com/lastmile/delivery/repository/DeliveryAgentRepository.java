@@ -8,4 +8,5 @@ import java.util.List;
 public interface DeliveryAgentRepository extends JpaRepository<DeliveryAgent, Long> {
 
     List<DeliveryAgent> findByAvailableTrue();
+    List<DeliveryAgent> findByAvailableTrueAndZoneId(Long zoneId);
 }

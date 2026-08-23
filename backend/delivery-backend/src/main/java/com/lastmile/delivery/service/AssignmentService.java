@@ -57,4 +57,36 @@ public class AssignmentService {
     public List<DeliveryAgent> getAvailableAgents() {
         return deliveryAgentRepository.findByAvailableTrue();
     }
+
+    public Assignment autoAssignOrder(Long orderId) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        Long zoneId = order.getPickupArea().getZone().getId();
+
+        List<DeliveryAgent> agents =
+                deliveryAgentRepository.findByAvailableTrueAndZoneId(zoneId);
+
+        if (agents.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No available delivery agent in pickup zone");
+        }
+
+        DeliveryAgent agent = agents.get(0);
+
+        order.setAssignedAgent(agent);
+        orderRepository.save(order);
+
+        agent.setAvailable(false);
+        deliveryAgentRepository.save(agent);
+
+        Assignment assignment = Assignment.builder()
+                .order(order)
+                .agent(agent)
+                .assignmentType(Assignment.AssignmentType.AUTO)
+                .build();
+
+        return assignmentRepository.save(assignment);
+    }
 }
