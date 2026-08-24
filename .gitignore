@@ -1,0 +1,21 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Spring Boot secrets
+**/src/main/resources/application-local.properties
+**/src/main/resources/application-prod.properties
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Build files
+target/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
