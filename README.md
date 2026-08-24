@@ -1,8 +1,22 @@
 # Last Mile Delivery Tracker
 
-A backend-driven last-mile delivery management platform for managing orders, delivery agents, pricing, tracking, failed deliveries, rescheduling, notifications, and role-based access.
+🚀 **Live Website Demo**: [https://arshavsuman20.github.io/Last-Mile-Delivery/](https://arshavsuman20.github.io/Last-Mile-Delivery/)
 
-## Overview
+A complete last-mile delivery logistics platform featuring automated rate calculations, zone pricing, agent auto-assignment, real-time visual tracking, failed delivery rescheduling, email/SMS notifications, and role-based portals for Customers, Delivery Agents, and Admins.
+
+---
+
+## 🔑 Demo Login Accounts
+
+Try the live web app using pre-configured demo credentials or the quick sign-in buttons:
+
+| Portal | Email | Password | Features |
+|---|---|---|---|
+| **Customer** | `customer@lastmile.com` | `password123` | Create orders, live rate calculator, track parcel, reschedule failed orders |
+| **Delivery Agent** | `agent1@lastmile.com` | `password123` | View assigned parcels, update delivery lifecycle status (`PICKED_UP` ➔ `DELIVERED`) |
+| **Admin** | `admin@lastmile.com` | `password123` | Manage orders, manual/auto agent assignment, edit rate cards, manage zones & areas |
+
+---
 
 The Last Mile Delivery Tracker automates key logistics operations:
 
