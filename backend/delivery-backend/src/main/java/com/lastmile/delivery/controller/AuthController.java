@@ -2,7 +2,9 @@ package com.lastmile.delivery.controller;
 
 import com.lastmile.delivery.dto.LoginRequest;
 import com.lastmile.delivery.dto.LoginResponse;
+import com.lastmile.delivery.dto.RegisterRequest;
 import com.lastmile.delivery.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +20,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
-            @RequestBody LoginRequest request) {
+            @RequestBody @Valid LoginRequest request) {
 
         return ResponseEntity.ok(
                 authService.login(request)
+        );
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponse> register(
+            @RequestBody @Valid RegisterRequest request) {
+
+        return ResponseEntity.ok(
+                authService.register(request)
         );
     }
 }

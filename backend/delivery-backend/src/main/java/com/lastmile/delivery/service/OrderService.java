@@ -84,12 +84,39 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        return new OrderResponse(
-                savedOrder.getId(),
-                savedOrder.getTotalCharge(),
-                savedOrder.getStatus(),
-                savedOrder.getCreatedAt()
-        );
+        return mapToResponse(savedOrder);
+    }
+
+    public OrderResponse mapToResponse(Order order) {
+        if (order == null) return null;
+        return OrderResponse.builder()
+                .id(order.getId())
+                .customerId(order.getCustomer() != null ? order.getCustomer().getId() : null)
+                .customerName(order.getCustomer() != null ? order.getCustomer().getName() : null)
+                .customerEmail(order.getCustomer() != null ? order.getCustomer().getEmail() : null)
+                .pickupAreaId(order.getPickupArea() != null ? order.getPickupArea().getId() : null)
+                .pickupAreaName(order.getPickupArea() != null ? order.getPickupArea().getName() : null)
+                .pickupAddress(order.getPickupAddress())
+                .dropAreaId(order.getDropArea() != null ? order.getDropArea().getId() : null)
+                .dropAreaName(order.getDropArea() != null ? order.getDropArea().getName() : null)
+                .dropAddress(order.getDropAddress())
+                .length(order.getLength())
+                .breadth(order.getBreadth())
+                .height(order.getHeight())
+                .actualWeight(order.getActualWeight())
+                .volumetricWeight(order.getVolumetricWeight())
+                .billableWeight(order.getBillableWeight())
+                .orderType(order.getOrderType())
+                .paymentType(order.getPaymentType())
+                .baseCharge(order.getBaseCharge())
+                .codSurcharge(order.getCodSurcharge())
+                .totalCharge(order.getTotalCharge())
+                .status(order.getStatus())
+                .assignedAgentId(order.getAssignedAgent() != null ? order.getAssignedAgent().getId() : null)
+                .assignedAgentName(order.getAssignedAgent() != null && order.getAssignedAgent().getUser() != null 
+                        ? order.getAssignedAgent().getUser().getName() : null)
+                .createdAt(order.getCreatedAt())
+                .build();
     }
 
     public Order save(Order order) {
@@ -103,6 +130,11 @@ public class OrderService {
     public List<Order> getAll() {
         return orderRepository.findAll();
     }
+
+    public List<Order> getByCustomerId(Long customerId) {
+        return orderRepository.findByCustomerId(customerId);
+    }
+
     public List<Order> filterOrders(
                 Order.Status status,
                 Long zoneId,
@@ -121,5 +153,5 @@ public class OrderService {
         }
 
         return orderRepository.findAll();
-        }
+    }
 }

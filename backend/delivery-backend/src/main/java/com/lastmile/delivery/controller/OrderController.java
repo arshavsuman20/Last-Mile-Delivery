@@ -25,26 +25,37 @@ public class OrderController {
         return ResponseEntity.ok(
             orderService.filterOrders(status, zoneId, agentId)
                 .stream()
-                .map(order -> new OrderResponse(
-                    order.getId(),
-                    order.getTotalCharge(),
-                    order.getStatus(),
-                    order.getCreatedAt()
-                ))
+                .map(order -> orderService.mapToResponse(order))
                 .toList()
         );
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<?> getCustomerOrders(
+            @PathVariable Long customerId) {
+
+        return ResponseEntity.ok(
+            orderService.getByCustomerId(customerId).stream()
+                .map(order -> orderService.mapToResponse(order))
+                .toList()
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrderById(
+            @PathVariable Long id) {
+        Order order = orderService.getById(id);
+        if (order == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(orderService.mapToResponse(order));
     }
 
     @GetMapping
     public ResponseEntity<?> getAllOrders() {
         return ResponseEntity.ok(
             orderService.getAll().stream()
-                .map(order -> new OrderResponse(
-                    order.getId(),
-                    order.getTotalCharge(),
-                    order.getStatus(),
-                    order.getCreatedAt()
-                ))
+                .map(order -> orderService.mapToResponse(order))
                 .toList()
         );
     }

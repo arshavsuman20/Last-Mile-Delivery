@@ -1,7 +1,9 @@
 package com.lastmile.delivery.service;
 
+import com.lastmile.delivery.entity.DeliveryAgent;
 import com.lastmile.delivery.entity.Order;
 import com.lastmile.delivery.entity.Reschedule;
+import com.lastmile.delivery.repository.DeliveryAgentRepository;
 import com.lastmile.delivery.repository.OrderRepository;
 import com.lastmile.delivery.repository.RescheduleRepository;
 import org.springframework.stereotype.Service;
@@ -13,17 +15,20 @@ public class RescheduleService {
 
     private final RescheduleRepository rescheduleRepository;
     private final OrderRepository orderRepository;
+    private final DeliveryAgentRepository deliveryAgentRepository;
     private final TrackingService trackingService;
     private final AssignmentService assignmentService;
 
     public RescheduleService(
             RescheduleRepository rescheduleRepository,
             OrderRepository orderRepository,
+            DeliveryAgentRepository deliveryAgentRepository,
             TrackingService trackingService,
             AssignmentService assignmentService) {
 
         this.rescheduleRepository = rescheduleRepository;
         this.orderRepository = orderRepository;
+        this.deliveryAgentRepository = deliveryAgentRepository;
         this.trackingService = trackingService;
         this.assignmentService = assignmentService;
     }
@@ -38,7 +43,15 @@ public class RescheduleService {
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
         if (newDeliveryDate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("New delivery date must be in the future");
+            throw new IllegalArgumentException(
+                    "New delivery date must be in the future");
+        }
+
+        DeliveryAgent oldAgent = order.getAssignedAgent();
+
+        if (oldAgent != null) {
+            oldAgent.setAvailable(true);
+            deliveryAgentRepository.save(oldAgent);
         }
 
         trackingService.updateStatus(
@@ -60,7 +73,8 @@ public class RescheduleService {
             assignmentService.autoAssignOrder(orderId);
         } catch (IllegalArgumentException e) {
             System.out.println(
-                "Auto-assignment skipped during reschedule: " + e.getMessage()
+                    "Auto-assignment skipped during reschedule: "
+                            + e.getMessage()
             );
         }
 

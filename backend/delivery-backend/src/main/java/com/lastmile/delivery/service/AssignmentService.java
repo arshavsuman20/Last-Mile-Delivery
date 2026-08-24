@@ -59,6 +59,30 @@ public class AssignmentService {
     }
 
     public Assignment autoAssignOrder(Long orderId) {
+        return autoAssignOrder(orderId, Assignment.AssignmentType.AUTO);
+    }
+
+    public Assignment rescheduleAssignOrder(Long orderId) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        DeliveryAgent previousAgent = order.getAssignedAgent();
+
+        if (previousAgent != null) {
+            previousAgent.setAvailable(true);
+            deliveryAgentRepository.save(previousAgent);
+        }
+
+        order.setAssignedAgent(null);
+        orderRepository.save(order);
+
+        return autoAssignOrder(orderId, Assignment.AssignmentType.RESCHEDULE);
+    }
+
+    private Assignment autoAssignOrder(
+            Long orderId,
+            Assignment.AssignmentType assignmentType) {
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
@@ -84,7 +108,7 @@ public class AssignmentService {
         Assignment assignment = Assignment.builder()
                 .order(order)
                 .agent(agent)
-                .assignmentType(Assignment.AssignmentType.AUTO)
+                .assignmentType(assignmentType)
                 .build();
 
         return assignmentRepository.save(assignment);

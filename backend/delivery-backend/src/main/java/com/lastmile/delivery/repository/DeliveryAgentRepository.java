@@ -9,4 +9,5 @@ public interface DeliveryAgentRepository extends JpaRepository<DeliveryAgent, Lo
 
     List<DeliveryAgent> findByAvailableTrue();
     List<DeliveryAgent> findByAvailableTrueAndZoneId(Long zoneId);
+    java.util.Optional<DeliveryAgent> findByUserId(Long userId);
 }
