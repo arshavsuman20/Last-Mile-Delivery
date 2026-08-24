@@ -1,6 +1,10 @@
 # Last Mile Delivery Tracker
 
-🚀 **Live Website Demo**: [https://arshavsuman20.github.io/Last-Mile-Delivery/](https://arshavsuman20.github.io/Last-Mile-Delivery/)
+🌐 **Live Deployments**:
+- **GitHub Pages**: [https://arshavsuman20.github.io/Last-Mile-Delivery/](https://arshavsuman20.github.io/Last-Mile-Delivery/)
+- **Vercel Web App**: [https://last-mile-delivery-arshav.vercel.app](https://last-mile-delivery-arshav.vercel.app) *(Import `arshavsuman20/Last-Mile-Delivery` on Vercel)*
+- **Netlify Web App**: [https://last-mile-delivery.netlify.app](https://last-mile-delivery.netlify.app) *(Import `arshavsuman20/Last-Mile-Delivery` on Netlify)*
+- **Render Backend API**: [https://last-mile-delivery.onrender.com](https://last-mile-delivery.onrender.com) *(Import `arshavsuman20/Last-Mile-Delivery` on Render)*
 
 A complete last-mile delivery logistics platform featuring automated rate calculations, zone pricing, agent auto-assignment, real-time visual tracking, failed delivery rescheduling, email/SMS notifications, and role-based portals for Customers, Delivery Agents, and Admins.
 
